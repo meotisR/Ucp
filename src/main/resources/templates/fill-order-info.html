@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Создание заказа</title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+
+    <div class="container">
+        <h1>Создание заказа</h1>
+        <form id="order-form">
+            <div class="form-group">
+                <label for="name">Груз:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="startLocation">Начальный пункт:</label>
+                <input type="text" id="startLocation" name="startLocation" required>
+            </div>
+
+            <div class="form-group">
+                <label for="endLocation">Конечный пункт:</label>
+                <input type="text" id="endLocation" name="endLocation" required>
+            </div>
+
+            <div class="form-group">
+                <label for="volume">Объём груза (см³):</label>
+                <input type="text" id="volume" name="volume" required>
+            </div>
+
+            <div class="form-group">
+                <label for="weight">Вес груза:</label>
+                <input type="text" id="weight" name="weight" required>
+            </div>
+
+            <button class="btn" type="submit">Далее</button>
+        </form>
+    </div>
+
+    <header th:insert="footer :: footer"></header>
+</body>
+
+<script>
+    $(document).ready(function() {
+        $("#order-form").submit(function(event) {
+            event.preventDefault(); 
+
+            var order = {
+                name: $("#name").val(),
+                startLocation: $("#startLocation").val(),
+                endLocation: $("#endLocation").val(),
+                volume: $("#volume").val(),
+                weight: $("#weight").val()
+            };
+
+            sessionStorage.setItem('order', JSON.stringify(order));
+
+            var url = "/find-order-options/" + order.name + "/" + order.startLocation + "/" + order.endLocation + "/" + order.volume + "/" + order.weigth; 
+
+            window.location.href = url;
+        });
+    });
+</script>
+</html>

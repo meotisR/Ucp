@@ -1,0 +1,130 @@
+/* Стили для страницы */
+:root {
+    --main-back-color: #fffdfb;
+    --header-color: #ffffff;
+    --footer-color-1: #f9f6f2;
+    --footer-color-2: #ffffff;
+    --box-color: #ffffff;
+    --box-color-2: #ffffff;
+    --button-color: #ffffff;
+    --additional-color-1: #AF447C;
+    --additional-color-2: #65a854;
+    --additional-color-3: #a8993f;
+  }
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.container-2 {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 20px; //отступ между контейнерами
+}
+
+.flex-container {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.actions-2 {
+    display: flex;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+}
+
+input[type="text"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #3f3f3f;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: #fffdfa;
+}
+
+input[type="checkbox"] {
+    margin-top: 10px;
+}
+
+button {
+background-color: var(--button-color);
+    padding: 10px 20px;
+    border: 2px solid #3f3f3f;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    color: #3f3f3f;
+    font-family: system-ui;
+    font-weight: bold;
+}
+
+.attention-color {
+    background-color: red;
+}
+
+body {
+font-family: Tahoma, Geneva, sans-serif;
+    font-size: 14px;
+    margin: 0px;
+    background-color: var(--main-back-color);
+    color: #3f3f3f;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+a {
+    color: #3f3f3f;
+    text-decoration: none;
+    font-weight: bolder;
+    /* text-decoration: underline; */
+    text-transform: uppercase;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.horizontal-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.course-container {
+    width: 490px;
+    height: 270px;
+    border-radius: 4px;
+    background-color: var(--box-color);
+    padding: 20px;
+    transition: transform 0.2s ease;
+}
+
+.course-container:hover {
+    transform: scale(1.01);
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Оформление сделки</title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+
+    <div class="container-2">
+        <h1>Оформление сделки</h1>
+
+        <table id="dealTable">
+            <tr>
+                <td>Заказчик</td>
+                <td th:text="${user.fio}"></td>
+            </tr>
+            <tr>
+                <td>Перевозчик</td>
+                <td th:text="${company.name}"></td>
+            </tr>
+            <tr>
+                <td>Маршрут</td>
+                <td id="route-cell"></td>
+            </tr>
+            <tr>
+                <td>Расстояние</td>
+                <td id="distance-cell"></td>
+            </tr>
+            <tr>
+                <td>Время</td>
+                <td id="time-cell"></td>
+            </tr>
+            <tr>
+                <td>Вес</td>
+                <td id="weight-cell"></td>
+            </tr>
+            <tr>
+                <td>Объём</td>
+                <td id="volume-cell"></td>
+            </tr>
+            <tr>
+                <td>Объект</td>
+                <td id="object-cell"></td>
+            </tr>
+            <tr>
+                <td>Цена</td>
+                <td id="price-cell"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="container-2">
+        <div class="actions-2">
+            <button id="deal-button">Заключить сделку</button>
+        </div>
+    </div>
+
+    <header th:insert="footer :: footer"></header>
+
+    <script th:inline="javascript">
+        var price = /*[[${price}]]*/ [];
+        var company_id = /*[[${company.id}]]*/ [];
+    </script>
+</body>
+
+<script>
+    var route = JSON.parse(sessionStorage.getItem('route'));
+    var distance = sessionStorage.getItem('distance');
+    var time = sessionStorage.getItem('time');
+
+    var order = JSON.parse(sessionStorage.getItem('order'));
+    var name = order.name;
+    var weight = order.weight;
+    var volume = order.volume;
+    
+    document.getElementById('route-cell').textContent = route[0] + " - " + route[route.length - 1];
+    document.getElementById('distance-cell').textContent = distance + " км.";
+    document.getElementById('time-cell').textContent = formatDuration(time);
+    document.getElementById('object-cell').textContent = name;
+    document.getElementById('price-cell').textContent = price + " BYN";
+    document.getElementById('weight-cell').textContent = weight + " кг.";
+    document.getElementById('volume-cell').textContent = volume + " см³";
+
+    var order = {
+        name: name,
+        route: route.join(" "),
+        distance: distance,
+        price: price,
+        weight: weight,
+        volume: volume,
+        company: company_id
+    };
+
+    console.log(order);
+
+    $(document).ready(function() {
+        $("#deal-button").click(function() {
+            $.ajax({
+                type: "POST",
+                url: "/create-order",
+                data: JSON.stringify(order),
+                contentType: "application/json",
+                success: function(response) {
+                    window.location.href='/user/' + response;
+                },
+                error: function(xhr, status, error) {
+                    // Обработка ошибки
+                    var errorMessage = xhr.responseText;
+                    alert("Произошла ошибка: " + errorMessage);
+                }
+            });
+        });
+    });
+
+    function formatDuration(minutes) {
+        if (minutes > 60) {
+            var hours = Math.floor(minutes / 60);
+            var remainingMinutes = minutes % 60;
+
+            return hours + " ч. " + remainingMinutes + " мин.";
+        } else {
+            return minutes + " мин.";
+        }
+    }
+</script>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #191919;
+        padding: 8px;
+        text-align: left;
+        background-color: #3F3F3F;
+        width: 50%;
+    }
+</style>
+</html>

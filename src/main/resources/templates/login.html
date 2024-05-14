@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Авторизация</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+    <link rel="stylesheet" type="text/css" href="/static/account.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <header th:insert="header :: header"></header>
+
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <div style="background-color: var(--box-color-2);width: 334px;
+        border-radius: 15px 15px;padding: 15px 32px;border: 2px solid #555555;box-shadow: -1px 5px 11px 1px #273b6912;">
+            <div class="container">
+
+                <form method="post" action="/login">
+                    <div style="text-align: center;"><h1>Авторизация</h1></div>
+
+                    <div class="form-group">
+                        <label for="username">Логин:</label>
+                        <input maxlength="20" type="text" id="username" name="username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Пароль:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </form>
+
+                <div class="actions">
+                    <button onclick="submitForm();" style="padding: 15px 32px">Войти</button>
+                    <button onclick="window.location.href = '/reg';">Регистрация</button>
+                </div>
+
+                <div th:if="${param.error}" style="text-align: center;">
+                    <p>Некорректный ввод логина или пароля</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:insert="footer :: footer"></footer>
+</body>
+
+<script>
+    function submitForm() {
+        document.querySelector('form').submit();
+    }
+</script>
+
+</html>

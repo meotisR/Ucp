@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>О проекте</title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+
+    <div class="container-2" style="line-height: 1.5;">
+        <h1>О проекте</h1>
+
+        <p class="red-indent">Это веб-сайт, который облегчает процесс заказа перевозки грузов для пользователей и предоставляет
+            возможность создания профилей для логистических компаний. Это позволяет клиентам быстро находить подходящих перевозчиков,
+            а компании - эффективно управлять своей деятельностью.
+        </p>
+        <p class="red-indent">Use cases:
+        </p>
+        <ul>
+            <li>Для обычных пользователей:
+              <ul>
+                <li>Авторизация/регистрация</li>
+                <li>Редактрование профиля</li>
+                <li>Создание, редактирование компании</li>
+                <li>Создание создание заказов</li>
+                <li>Выполнение заказов</li>
+                <li>Пополнение профиля</li>
+              </ul>
+            </li>
+        </ul>
+
+        <button onclick="window.history.back()">Назад</button>
+    </div>
+
+    <header th:insert="footer :: footer"></header>
+</body>
+
+<style>
+    .red-indent {
+      text-indent: 1em;
+      margin-left: -1em;
+    }
+  </style>
+
+</html>

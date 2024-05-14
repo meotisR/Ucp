@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Создание заказа</title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+    <link rel="stylesheet" type="text/css" href="/static/account.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvd6hxDzFtGnFVdRugtVZSswOpd3uaUEM&callback=initMap" async defer></script>
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+
+    <div class="container-2" id="map" style="height: 400px;"></div>
+
+    <div class="container-2" style="padding-left: 0px; padding-right: 0px; max-width: 1090px;">
+        <table id="routeTable">
+            <thead>
+                <tr>
+                    <th>Отрезок маршрута</th>
+                    <th>Расстояние</th>
+                    <th>Время</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div class="flex-container"  th:each="company : ${companies}" style="background-color: var(--box-color); margin-bottom: 20px; border-radius: 4px;">
+        <div class="photo-middle">
+            <img th:src="${company.photo}" alt="Фотография">
+        </div>
+
+        <div style="margin-left: 55px">
+            <a th:href="@{/company/{id}(id=${company.id})}" style="text-decoration: none;">
+                <h1 th:text="${company.name}" style="margin: 0px;">Название</h1>
+            </a>
+            <p style="margin-top: 5px; margin-bottom: 10px;"><span th:text="${company.price}"></span><span> BYN</span></p>
+
+            <a th:href="@{/deal/{company}/{price}(company=${company.id}, price=${company.price})}">
+                <button>Выбрать</button>
+            </a>
+        </div>
+    </div>
+
+    <header th:insert="footer :: footer"></header>
+
+    <script th:inline="javascript">
+        var route = /*[[${route}]]*/ [];
+        var startLocation = route[0];
+        var endLocation = route[route.length - 1];
+
+        sessionStorage.setItem('route', JSON.stringify(route));
+
+        var intermediateCities = [];
+
+        if (route.length >= 3) {
+            for (i = 1; i < route.length - 1; i++) {
+                intermediateCities.push(route[i]);
+            }
+        }
+    </script>
+</body>
+
+<script>
+    window.onload = function() {
+        var table = document.getElementById('routeTable');
+
+        for (var i = 1; i <= route.length; i++) {
+            (function(i) {
+                var row = table.insertRow(); // Создание новой строки в таблице
+                var segmentCell = row.insertCell(); 
+                var distanceCell = row.insertCell(); 
+                var timeCell = row.insertCell(); 
+
+                if (i < route.length) {
+                    // Заполнение ячейки городов маршрута
+                    segmentCell.textContent = route[i - 1] + ' - ' + route[i];
+
+                    // Вызов функции для получения расстояния и времени и заполнения ячеек таблицы
+                    getDistanceAndDuration(route[i - 1], route[i]).then(function(data) {
+                        distanceCell.textContent = data.distance;
+                        timeCell.textContent = data.duration;
+                    });
+                } else {
+                    segmentCell.textContent = "Итого";
+
+                    getFullDistanceAndDuration(startLocation, intermediateCities, endLocation).then(function(data) {
+                        distanceCell.textContent = data.distance;
+                        timeCell.textContent = data.duration;
+                });
+                }
+            })(i);
+        }
+
+        function getDistanceAndDuration(origin, destination) {
+            var service = new google.maps.DistanceMatrixService();
+            var request = {
+                origins: [origin],
+                destinations: [destination],
+                travelMode: 'DRIVING'
+            };
+
+            return new Promise(function(resolve, reject) {
+            service.getDistanceMatrix(request, function(response, status) {
+                if (status === 'OK') {
+                    var distance = response.rows[0].elements[0].distance.text;
+                    var duration = response.rows[0].elements[0].duration.text;
+              
+                resolve({ distance: distance, duration: duration });
+                } else {
+                    reject(status);
+                }
+            });
+            });
+        }
+
+        function getFullDistanceAndDuration(start, waypoints, end) {
+            var directionsService = new google.maps.DirectionsService();
+
+            var request = {
+                origin: start,
+                destination: end,
+                waypoints: waypoints.map(function(waypoint) {
+                    return { location: waypoint, stopover: true };
+                }),
+                travelMode: 'DRIVING'
+            };
+
+            return new Promise(function(resolve, reject) {
+                directionsService.route(request, function(result, status) {
+                    if (status === 'OK') {
+                        var distance = result.routes[0].legs.reduce(function(total, leg) {
+                            return total + leg.distance.value;
+                        }, 0);
+                        var duration = result.routes[0].legs.reduce(function(total, leg) {
+                            return total + leg.duration.value;
+                        }, 0);
+                        resolve({ distance: formatDistance(distance), duration: formatDuration(duration) });
+                    } else {
+                        reject(status);
+                    }
+                });
+            });
+        }
+
+        function formatDistance(distance) {
+            // Преобразование расстояния из метров в километры с округлением до двух знаков после запятой
+            var kilometers = (distance / 1000).toFixed(0);
+
+            sessionStorage.setItem('distance', kilometers);
+
+            return kilometers + ' км';
+        }
+
+        function formatDuration(duration) {
+            var minutes = Math.round(duration / 60);
+
+            sessionStorage.setItem('time', minutes);
+
+            if (minutes > 60) {
+                var hours = Math.floor(minutes / 60);
+                var remainingMinutes = minutes % 60;
+
+                return hours + " ч. " + remainingMinutes + " мин.";
+            } else {
+                return minutes + " мин.";
+            }
+        }
+    }
+</script>
+
+<script>
+    function initMap() {
+        // Создание объекта карты
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 7,
+            center: {lat: 55.7558, lng: 37.6176} // Координаты центра карты (например, Москва)
+        });
+        
+        // Создание объекта отображения маршрута
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            map: map
+        });
+        
+        // Установка начальной и конечной точек маршрута
+        var origin = startLocation;
+        var destination = endLocation;
+        
+        // Создание объекта запроса к Directions Service API
+        var request = {
+            origin: origin,
+            destination: destination,
+            waypoints: [],
+            travelMode: 'DRIVING'
+        };
+
+        // Добавление промежуточных точек из массива intermediateCities
+        for (var i = 0; i < intermediateCities.length; i++) {
+            request.waypoints.push({
+                location: intermediateCities[i],
+                stopover: true
+            });
+        }
+        
+        // Создание объекта Directions Service
+        var directionsService = new google.maps.DirectionsService();
+        directionsService.route(request, function(response, status) {
+            if (status === 'OK') {
+            // Установка маршрута на объект отображения маршрута
+            directionsDisplay.setDirections(response);
+            }
+        });
+    }
+</script>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #191919;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #3F3F3F;
+    }
+</style>
+</html>

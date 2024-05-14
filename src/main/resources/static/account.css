@@ -1,0 +1,76 @@
+#photo {
+    width: 384px;
+    height: 384px;
+    overflow: hidden;
+    border-radius: 9%;
+    border: 1px solid #000;
+    position: relative;
+    background-color: white;
+}
+#photo img {
+    width: 100%;
+    object-fit: cover;
+}
+/* обрезать избр */
+#img {
+    /* width: 200%; */
+    height: auto;
+    object-fit: cover;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(120%);
+}
+.photo-small {
+    width: 45px;
+    height: 45px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.photo-small img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.photo-middle {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.photo-middle img {
+    width: 100%;
+    object-fit: cover;
+}
+
+#right-section {
+    margin-left: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#user-profile {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+}
+
+table {
+    background-color: #f9f6f2;
+    width: 100%;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+    color: #3f3f3f;
+}
+
+td {
+    height: 20px;
+}
+
+

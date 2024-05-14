@@ -1,0 +1,7 @@
+.flex-container {
+    transition: transform 0.2s ease;
+}
+
+.flex-container:hover {
+    transform: scale(1.01);
+}

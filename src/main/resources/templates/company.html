@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title th:text="${company.name}"></title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+    <link rel="stylesheet" type="text/css" href="/static/account.css">
+    
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+
+    <div id="user-profile">
+        <div id="photo">
+            <img th:src="${company.photo}">
+        </div>
+        <div id="right-section">
+            <h1 th:text="${company.name}" style="margin: 0px;">Название</h1>
+            <h3 th:text="${company.description}" style="margin-top: 5px;">Слоган</h3>
+
+            <table>
+                <tr>
+                    <td>email:</td> 
+                    <td th:text="${company.email}">-</td> 
+                </tr>
+                <tr>
+                    <td>Тариф за км:</td> 
+                    <td th:text="${company.distanceRate}">-</td> 
+                </tr>
+                <tr>
+                    <td>Тариф за кг:</td> 
+                    <td th:text="${company.weightRate}">-</td> 
+                </tr>
+                <tr>
+                    <td>Тариф за см³:</td> 
+                    <td th:text="${company.distanceRate}">-</td> 
+                </tr>
+                <tr>
+                    <td>Основана:</td> 
+                    <td th:text="${company.date}">-</td> 
+                </tr>
+            </table> 
+
+            <div th:if="${role == 'admin'}" class="actions-2">
+                <a th:href="@{/edit/company/{id}(id=${company.id})}">
+                    <button>Редактировать профиль</button>
+                </a>
+
+                <a th:href="@{/orders/company/{id}(id=${company.id})}">
+                    <button>Заказы</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div th:insert="footer :: footer"></div>
+
+    <script th:inline="javascript">
+        var schoolID = /*[[${company.id}]]*/ [];
+    </script>
+</body>
+</html>

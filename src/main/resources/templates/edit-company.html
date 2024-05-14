@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Редактирование компании</title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+
+    <div class="container">
+        <h1>Редактирование компании</h1>
+        <form id="edit-company-form">
+            <div class="form-group">
+                <label for="name">Название компании:</label>
+                <input type="text" id="name" name="name" th:value="${company.name}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">email:</label>
+                <input type="text" id="email" name="email" th:value="${company.email}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="distanceRate">Тариф перевозки по расстоянию (цена за 1 км):</label>
+                <input type="text" id="distanceRate" name="distanceRate" th:value="${company.distanceRate}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="volumeRate">Тариф перевозки по объёму (цена за 1 см³):</label>
+                <input type="text" id="volumeRate" name="volumeRate" th:value="${company.volumeRate}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="weightRate">Тариф перевозки по весу (цена за 1 кг):</label>
+                <input type="text" id="weightRate" name="weightRate" th:value="${company.weightRate}"  required>
+            </div>
+
+            <div class="form-group">
+                <label for="photo">Логотип (ссылка):</label>
+                <input type="text" id="photo" name="photo"  th:value="${company.photo}">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание, слоган, девиз:</label>
+                <input type="text" id="description" name="description"  th:value="${company.description}" required>
+            </div>
+
+            <button class="btn" type="submit">Редактировать компанию</button>
+        </form>
+    </div>
+
+    <header th:insert="footer :: footer"></header>
+
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            $("#edit-company-form").submit(function(event) {
+                event.preventDefault(); 
+    
+                var company = {
+                    name: $("#name").val(),
+                    email: $("#email").val(),
+                    distanceRate: $("#distanceRate").val(),
+                    volumeRate: $("#volumeRate").val(),
+                    weightRate: $("#weightRate").val(),
+                    photo: $("#photo").val(),
+                    description: $("#description").val()
+                };
+
+                var company_id = /*[[${company.id}]]*/ [];
+    
+                $.ajax({
+                    type: "POST",
+                    url: "/edit-company/" + company_id,
+                    data: JSON.stringify(company),
+                    contentType: "application/json",
+                    success: function(response) {
+                        // Обработка успешного ответа
+                        window.location.href='/company/' + company_id;
+                    },
+                    error: function(xhr, status, error) {
+                        // Обработка ошибки
+                        var errorMessage = xhr.responseText;
+                        alert("Произошла ошибка: " + errorMessage);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

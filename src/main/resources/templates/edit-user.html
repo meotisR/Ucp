@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Редактирование профиля</title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+    
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+
+    <div class="container">
+        <h1>Редактирование профиля</h1>
+        <form id="edit-user-form">
+            <div class="form-group">
+                <label for="fio">Фамилия Имя Отчетство:</label>
+                <input type="text" id="fio" name="fio" th:value="${user.fio}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="photo">Фото (ссылка):</label>
+                <input type="text" id="photo" name="photo">
+            </div>
+
+            <button class="btn" type="submit">Редактировать профиль</button>
+        </form>
+    </div>
+
+
+    <header th:insert="footer :: footer"></header>
+
+    <script th:inline="javascript"> 
+        var userID = /*[[${user.id}]]*/ [];
+    </script>
+</body>
+</html>
+
+<script>
+    $(document).ready(function() {
+        $("#edit-user-form").submit(function(event) {
+            event.preventDefault(); 
+
+            var fio = $("#fio").val().trim();
+            var photo = $("#photo").val().trim();
+
+            // Проверка, если поля пустые
+            if (fio === "" || photo === "") {
+                alert("Пожалуйста, заполните все поля перед отправкой формы.");
+                return;
+            }
+
+            var user = {
+                fio: fio,
+                photo: photo
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/edit-user/" + userID,
+                data: JSON.stringify(user),
+                contentType: "application/json",
+                success: function(response) {
+                    // Обработка успешного ответа
+                    window.location.href = '/user/' + userID;
+                },
+                error: function(xhr, status, error) {
+                    // Обработка ошибки
+                    var errorMessage = xhr.responseText;
+                    alert("Произошла ошибка: " + errorMessage);
+                }
+            });
+        });
+    });
+</script>

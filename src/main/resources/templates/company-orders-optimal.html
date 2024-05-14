@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Входящие заказы</title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+    <link rel="stylesheet" type="text/css" href="/static/account.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+    
+    <div class="container-2" style="padding-bottom: 0px;">
+        <h1>Наиболее эффективно скомпонавать заказы таким образом:</h1>
+    </div>
+    <div class="container-2" th:each="routeContainer : ${routes}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Маршрут</th>
+                    <th>Заказчик</th>
+                    <th>Расстояние</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="order : ${routeContainer.getOrderList()}">
+                    <td th:text="${order.name}"></td>
+                    <td th:text="${order.route}"></td>
+                    <td th:text="${order.user.fio}"></td>
+                    <td th:text="${order.distance}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container-2" style="padding-top: 0px;">
+        <div class="actions-2">
+            <button id="commit-button">Выполнить заказы</button>
+        </div>
+    </div>
+
+    <header th:insert="footer :: footer"></header>
+
+    <script th:inline="javascript">
+        var company_id = /*[[${company.id}]]*/ [];
+    </script>
+</body>
+
+<script>
+    $(document).ready(function() {
+        $("#commit-button").click(function() {
+            $.ajax({
+                type: "POST",
+                url: "/complete-orders/" + company_id,
+                success: function(response) {
+                    // Обработка успешного ответа
+                    window.location.href='/orders/company/' + company_id;
+                },
+                error: function(xhr, status, error) {
+                    // Обработка ошибки
+                    var errorMessage = xhr.responseText;
+                    alert("Произошла ошибка: " + errorMessage);
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #191919;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #3F3F3F;
+    }
+</style>
+</html>

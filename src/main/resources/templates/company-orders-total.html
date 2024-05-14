@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Входящие заказы</title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+    <link rel="stylesheet" type="text/css" href="/static/account.css">
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+    
+    <div class="container-2" th:if="${emptiness == false}" style="padding-bottom: 0px;">
+        <h1>Общий список активных заказов:</h1>
+    </div>
+
+    <div class="container-2" th:if="${emptiness == false}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Маршрут</th>
+                    <th>Заказчик</th>
+                    <th>Расстояние</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.name}"></td>
+                    <td th:text="${order.route}"></td>
+                    <td th:text="${order.user.fio}"></td>
+                    <td th:text="${order.distance}"></td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container-2" th:if="${emptiness == false}" style="padding-top: 0px;">
+        <div class="actions-2">
+            <a th:href="@{/orders/optimal/company/{id}(id=${company.id})}">
+                <button>Скомпонавать заказы оптимально</button>
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${emptiness == true}" th:insert="emptiness :: emptiness"></div>
+
+    <header th:insert="footer :: footer"></header>
+</body>
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #191919;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #3F3F3F;
+    }
+</style>
+</html>

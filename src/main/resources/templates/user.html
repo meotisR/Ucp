@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title th:text="${user.username}"></title>
+    <link rel="stylesheet" type="text/css" href="/static/order.css">
+    <link rel="stylesheet" type="text/css" href="/static/account.css">
+
+    <link rel="stylesheet" type="text/css" href="/static/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/footer.css">
+
+</head>
+<body>
+    <header th:insert="header :: header"></header>
+    
+    <div id="user-profile">
+        <div id="photo">
+            <div id="img">
+                <img th:src="${user.photo}">
+            </div>
+        </div>
+        <div id="right-section">
+            <h1 style="margin: 0px;">
+                <span th:text="${user.fio}">Фамилия Имя Отчество</span>
+            </h1>
+            <h3 th:text="${user.username}" style="margin-top: 5px;">Username</h3>
+
+            <table>
+                <tr>
+                    <td>Зарегистрирован:</td> 
+                    <td th:text="${user.date}"></td> 
+                </tr>
+                <tr th:if="${status == 'owner'}">
+                    <td>Баланс:</td> 
+                    <td>
+                        <span th:text="${user.balance}"></span>
+                        <span> BYN</span>
+                    </td> 
+                </tr>
+            </table> 
+
+            <div class="actions-2" th:if="${status == 'owner'}">
+                <a th:href="@{/edit/user-balance/{id}(id=${user.id})}">
+                    <button>Баланс</button>
+                </a>
+
+                <a th:href="@{/edit/user/{id}(id=${user.id})}">
+                    <button>Профиль</button>
+                </a>
+
+                <a th:href="@{/orders/user/{id}(id=${user.id})}">
+                    <button>Заказы</button>
+                </a>
+
+                <a  th:if="${user.company != null}" th:href="@{/company/{id}(id=${user.company.id})}">
+                    <button>Компания</button>
+                </a>
+
+                <a  th:if="${user.company == null}" href="/create/company">
+                    <button>Создать компанию</button>
+                </a>
+
+                <a href="/create/order">
+                    <button>Создать заказ</button>
+                </a>
+
+                <a  th:if="${role == 'ADMIN'}" href="/moderate">
+                    <button>Модерировать</button>
+                </a>
+            </div>
+
+            <div class="actions-2" th:if="${status != 'owner'}">
+                <a  th:if="${user.company != null}" th:href="@{/company/{id}(id=${user.company.id})}">
+                    <button>Компания</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div th:insert="footer :: footer"></div>
+</body>
+</html>
